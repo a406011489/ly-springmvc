@@ -16,13 +16,9 @@ public class DemoController {
 
     @LyRequestMapping("/b")
     public void demoMethod(String name, String age) {
-
         System.out.println("收到请求，参数name：" + name);
-        System.out.println("收到请求，参数name：" + age);
-
-//        demoServiceImpl.demoServiceMethod();
-
+        System.out.println("收到请求，参数age：" + age);
+        demoServiceImpl.demoServiceMethod();
         System.out.println("执行完方法");
-
     }
 }

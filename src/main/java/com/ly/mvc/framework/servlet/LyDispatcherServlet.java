@@ -76,7 +76,7 @@ public class LyDispatcherServlet extends HttpServlet {
         }
     }
 
-    // 2、开始扫描调用方的磁盘上的文件夹（File）  com/ly/demo
+    // 2、开始扫描调用方的磁盘上的文件夹（File）
     private void doScan(String scanPackage) {
         String scanPackagePath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath() + scanPackage.replaceAll("\\.", "/");
         File filePackage = new File(scanPackagePath);
@@ -102,7 +102,6 @@ public class LyDispatcherServlet extends HttpServlet {
         if (classNames.size() == 0) return;
 
         try {
-            // com.ly.demo.controller.DemoController
             for (String className : classNames) {
                 // 反射
                 Class<?> aClass = Class.forName(className);
@@ -125,13 +124,11 @@ public class LyDispatcherServlet extends HttpServlet {
                     String beanName = annotation.value();
 
                     // 如果指定了id，就以指定的为准
-                    if (!"".equals(beanName.trim())) {
-                        ioc.put(beanName, aClass.newInstance());
-                    } else {
+                    if ("".equals(beanName.trim())) {
                         // 如果没有指定，就以类名首字母小写
                         beanName = CommonUtils.lowerFirst(aClass.getSimpleName());
-                        ioc.put(beanName, aClass.newInstance());
                     }
+                    ioc.put(beanName, aClass.newInstance());
 
                     // service层往往是有接口的，面向接口开发，此时再以接口名为id，放入一份对象到ioc中，便于后期根据接口类型注入
                     Class<?>[] interfaces = aClass.getInterfaces();
@@ -177,7 +174,7 @@ public class LyDispatcherServlet extends HttpServlet {
 
                 if ("".equals(beanName.trim())) {
                     // 没有配置具体的bean id，那就需要根据当前字段类型注入（接口注入）  IDemoService
-                    beanName = declaredField.getType().getName();
+                    beanName = declaredField.getName();
                 }
 
                 // 开启赋值
@@ -281,7 +278,7 @@ public class LyDispatcherServlet extends HttpServlet {
         // 遍历request中所有参数（填充除了request，response之外的参数）
         for (Map.Entry<String, String[]> param : parameterMap.entrySet()) {
 
-            String value = CommonUtils.join(param.getValue(), ",");  // 如同 1,2
+            String value = CommonUtils.join(param.getValue(), ",");  //
 
             // 如果参数和方法中的参数匹配上了，填充数据
             if (!handler.getParamIndexMapping().containsKey(param.getKey())) {
@@ -289,7 +286,7 @@ public class LyDispatcherServlet extends HttpServlet {
             }
 
             // 方法形参确实有该参数，找到它的索引位置，对应的把参数值放入paraValues
-            Integer index = handler.getParamIndexMapping().get(param.getKey());//name在第 2 个位置
+            Integer index = handler.getParamIndexMapping().get(param.getKey());
 
             paraValues[index] = value;  // 把前台传递过来的参数值填充到对应的位置去
         }
